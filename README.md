@@ -1,2 +1,2 @@
-# oracle-apex-barcoe
+# oracle-apex-barcode
 Oracle-APEX-Plugin for displaying EAN8, Code128 and QR-Codes
