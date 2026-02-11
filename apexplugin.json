@@ -1,0 +1,33 @@
+{
+    "name" :        "Barcode",
+    "version" :     "0.1.0",
+    "description" : "An item-plugin to display EAN8, Code128 and QR-Codes, type and size can be configured via static values of by values of items. It uses the APEX_BARCODE API",
+    "keywords" :    ["Barcode", "QR-Code", "EAN8", "Code128"],
+    "homepage" :    "https://github.com/simonuwe/oracle-apex-barcode/",
+    "bugs" : {
+      "url" :       "https://github.com/simonuwe/oracle-apex-barcode/issues",
+      "email" :     "uwe.simon@magenta.de"
+    },
+    "license" :     "Apache 2.0",
+    "commercial" :  "No",
+    "author" : {
+      "name" :      "Uwe Simon",
+      "email" :     "uwe.simon@magenta.de"
+    },
+    "repository" : {
+      "type" :      "git",
+      "url" :       "https://github.com/simonuwe/oracle-apex-barcode.git"
+    },
+    "oracle" : {
+      "versions" :  ["19.0.0", "23.0.0", "23.26.0"],
+      "apex" : {
+        "versions" :       ["23.02", "24.01", "24.02"],
+        "plugin" : {
+          "internalName" : "BARCODE.UWESIMON.SELFHOST.EU",
+          "type" :         "item",
+          "demo" :         "https://tlodfjxbrej9i6r-uwe01.adb.eu-frankfurt-1.oraclecloudapps.com/ords/r/uwe/barcode-demo/home",
+          "previewImage" : "https://raw.githubusercontent.com/simonuwe/oracle-apex-barcode/main/docu/demo.gif"
+        }
+      }
+    }
+  }
