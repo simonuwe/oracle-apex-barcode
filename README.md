@@ -9,6 +9,8 @@ The Demo could be found in the subdirectory **demo**.
 Here a [Live-Demo](
 https://tlodfjxbrej9i6r-uwe01.adb.eu-frankfurt-1.oraclecloudapps.com/ords/r/uwe/barcode-demo/barcode)
 
+Enter here an **Input** (text or number for EAN8), **Type** (EAN8, Code128, QR-Code) and the **Size** of the graphic. With **Generate** you than can generate the graphic for the **Input**.
+
 # Example
 ![Example](docu/example-01.png).
 
