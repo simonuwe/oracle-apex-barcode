@@ -33,7 +33,7 @@ prompt APPLICATION 104 - barcode-demo
 -- Application Export:
 --   Application:     104
 --   Name:            barcode-demo
---   Date and Time:   21:35 Wednesday February 11, 2026
+--   Date and Time:   19:09 Monday March 2, 2026
 --   Exported By:     UWE
 --   Flashback:       0
 --   Export Type:     Component Export
@@ -64,12 +64,16 @@ wwv_flow_imp_shared.create_plugin(
 '    p_param  IN apex_plugin.t_item_render_param, ',
 '    p_result IN OUT NOCOPY apex_plugin.t_item_render_result',
 ') IS ',
-'  l_code      BLOB; ',
-'  l_scale     INTEGER := p_item.attributes.get_number(''scale'');',
-'  l_type      INTEGER := p_item.attributes.get_number(''type''); ',
-'  l_typeitem  VARCHAR2(1000) := p_item.attributes.get_varchar2(''typeitem''); ',
-'  l_scaleitem VARCHAR2(1000) := p_item.attributes.get_varchar2(''scaleitem''); ',
-'  l_value     p_param.value%TYPE := p_param.value;',
+'  l_code       BLOB; ',
+'  l_scale      INTEGER        := p_item.attributes.get_number(''scale'');',
+'  l_type       INTEGER        := p_item.attributes.get_number(''type''); ',
+'  l_typeitem   VARCHAR2(1000) := p_item.attributes.get_varchar2(''typeitem''); ',
+'  l_scaleitem  VARCHAR2(1000) := p_item.attributes.get_varchar2(''scaleitem''); ',
+'  l_quiet      NuMBER         := p_item.attributes.get_varchar2(''quiet'');',
+'  l_foreground VARCHAR2(7)    := p_item.attributes.get_varchar2(''foregroundcolor'');',
+'  l_background VARCHAR2(7)    := p_item.attributes.get_varchar2(''backgroundcolor'');',
+'  l_eclevel    apex_barcode.t_eclevel_type:=p_item.attributes.get_varchar2(''eclevel'');',
+'  l_value      p_param.value%TYPE := p_param.value;',
 'BEGIN',
 '  APEX_DEBUG.TRACE(''BARCODE-PLUGIN: item: "%s" type: %d typeitem: "%s" scale: %d value: "%s"'', p_item.name, l_type, l_typeitem, l_scale, l_value);',
 '  IF(l_type=0) THEN -- the type is in a page-item, so get it',
@@ -80,9 +84,9 @@ wwv_flow_imp_shared.create_plugin(
 '  END IF;',
 '  IF(l_value IS NOT NULL) THEN',
 '    CASE l_type',
-'      WHEN 1 THEN l_code:= APEX_BARCODE.GET_EAN8_PNG(p_value=>l_value, p_scale=>l_scale);',
-'      WHEN 2 THEN l_code:= APEX_BARCODE.GET_CODE128_PNG(p_value=>l_value, p_scale=>l_scale);',
-'      WHEN 3 THEN l_code:= APEX_BARCODE.GET_QRCODE_PNG(p_value=>l_value, p_scale=>l_scale);',
+'      WHEN 1 THEN l_code:= APEX_BARCODE.GET_EAN8_PNG(p_value=>l_value, p_scale=>l_scale, p_foreground_color=>l_foreground, p_background_color=>l_background);',
+'      WHEN 2 THEN l_code:= APEX_BARCODE.GET_CODE128_PNG(p_value=>l_value, p_scale=>l_scale, p_foreground_color=>l_foreground, p_background_color=>l_background);',
+'      WHEN 3 THEN l_code:= APEX_BARCODE.GET_QRCODE_PNG(p_value=>l_value, p_scale=>l_scale, p_foreground_color=>l_foreground, p_background_color=>l_background, p_quiet=>l_quiet, p_eclevel=>l_eclevel);',
 '    END CASE;',
 '    htp.p(''<img id="'' || p_item.name|| ''" class="display_image apex-item-image" src="data:image/png;base64,''|| APEX_WEB_SERVICE.BLOB2CLOBBASE64(l_code) ||''"></img>'');',
 '',
@@ -100,9 +104,9 @@ wwv_flow_imp_shared.create_plugin(
 ,p_render_function=>'render_barcode_field'
 ,p_standard_attributes=>'VISIBLE:FORM_ELEMENT:WIDTH:HEIGHT:ELEMENT_OPTION'
 ,p_substitute_attributes=>true
-,p_version_scn=>118530440
+,p_version_scn=>121717186
 ,p_subscribe_plugin_settings=>true
-,p_version_identifier=>'0.1'
+,p_version_identifier=>'0.2.0'
 ,p_about_url=>'https://github.com/simonuwe/oracle-apex-barcode'
 );
 wwv_flow_imp_shared.create_plugin_attribute(
@@ -270,6 +274,94 @@ wwv_flow_imp_shared.create_plugin_attribute(
 ,p_depending_on_has_to_exist=>true
 ,p_depending_on_condition_type=>'EQUALS'
 ,p_depending_on_expression=>'0'
+);
+wwv_flow_imp_shared.create_plugin_attribute(
+ p_id=>wwv_flow_imp.id(207059956386264678)
+,p_plugin_id=>wwv_flow_imp.id(372520142174124782)
+,p_attribute_scope=>'COMPONENT'
+,p_attribute_sequence=>5
+,p_display_sequence=>50
+,p_static_id=>'foregroundcolor'
+,p_prompt=>'Foreground Color'
+,p_attribute_type=>'COLOR'
+,p_is_required=>true
+,p_default_value=>'#000000'
+,p_is_translatable=>false
+);
+wwv_flow_imp_shared.create_plugin_attribute(
+ p_id=>wwv_flow_imp.id(206260033852257212)
+,p_plugin_id=>wwv_flow_imp.id(372520142174124782)
+,p_attribute_scope=>'COMPONENT'
+,p_attribute_sequence=>6
+,p_display_sequence=>60
+,p_static_id=>'backgroundcolor'
+,p_prompt=>'Background Color'
+,p_attribute_type=>'COLOR'
+,p_is_required=>false
+,p_is_translatable=>false
+);
+wwv_flow_imp_shared.create_plugin_attribute(
+ p_id=>wwv_flow_imp.id(207659958252277152)
+,p_plugin_id=>wwv_flow_imp.id(372520142174124782)
+,p_attribute_scope=>'COMPONENT'
+,p_attribute_sequence=>7
+,p_display_sequence=>70
+,p_static_id=>'quiet'
+,p_prompt=>'Quiet'
+,p_attribute_type=>'NUMBER'
+,p_is_required=>false
+,p_default_value=>'1'
+,p_is_translatable=>false
+,p_depending_on_attribute_id=>wwv_flow_imp.id(375521514850360338)
+,p_depending_on_has_to_exist=>true
+,p_depending_on_condition_type=>'IN_LIST'
+,p_depending_on_expression=>'0,3'
+);
+wwv_flow_imp_shared.create_plugin_attribute(
+ p_id=>wwv_flow_imp.id(207859919495280975)
+,p_plugin_id=>wwv_flow_imp.id(372520142174124782)
+,p_attribute_scope=>'COMPONENT'
+,p_attribute_sequence=>8
+,p_display_sequence=>80
+,p_static_id=>'eclevel'
+,p_prompt=>'EC-Level'
+,p_attribute_type=>'SELECT LIST'
+,p_is_required=>false
+,p_default_value=>'H'
+,p_is_translatable=>false
+,p_depending_on_attribute_id=>wwv_flow_imp.id(375521514850360338)
+,p_depending_on_has_to_exist=>true
+,p_depending_on_condition_type=>'IN_LIST'
+,p_depending_on_expression=>'0,3'
+,p_lov_type=>'STATIC'
+);
+wwv_flow_imp_shared.create_plugin_attr_value(
+ p_id=>wwv_flow_imp.id(209460304976362881)
+,p_plugin_attribute_id=>wwv_flow_imp.id(207859919495280975)
+,p_display_sequence=>10
+,p_display_value=>'Low'
+,p_return_value=>'L'
+);
+wwv_flow_imp_shared.create_plugin_attr_value(
+ p_id=>wwv_flow_imp.id(209460774959364728)
+,p_plugin_attribute_id=>wwv_flow_imp.id(207859919495280975)
+,p_display_sequence=>20
+,p_display_value=>'Medium'
+,p_return_value=>'M'
+);
+wwv_flow_imp_shared.create_plugin_attr_value(
+ p_id=>wwv_flow_imp.id(209461199780366546)
+,p_plugin_attribute_id=>wwv_flow_imp.id(207859919495280975)
+,p_display_sequence=>30
+,p_display_value=>'Quartile'
+,p_return_value=>'Q'
+);
+wwv_flow_imp_shared.create_plugin_attr_value(
+ p_id=>wwv_flow_imp.id(209461519428367455)
+,p_plugin_attribute_id=>wwv_flow_imp.id(207859919495280975)
+,p_display_sequence=>40
+,p_display_value=>'High'
+,p_return_value=>'H'
 );
 end;
 /
